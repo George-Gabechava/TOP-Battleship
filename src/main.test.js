@@ -2,6 +2,7 @@ const { Ship, Gameboard } = require("./main");
 
 const carrierP1 = Ship("carrier", 5);
 const cruiserP1 = Ship("cruiserP1", 3);
+const submarineP1 = Ship("submarineP1", 3);
 
 describe("Ship Tests", () => {
   test("creates a Ship object with correct properties", () => {
@@ -26,16 +27,25 @@ describe("Ship Tests", () => {
 });
 
 describe("Gameboard Tests", () => {
-  test(("gameboard returns an object"), () => {
+  test(("gameboard returns a board object"), () => {
     const gameboardP1 = Gameboard();
 
     expect(gameboardP1.board).toHaveProperty("G2", "empty");
   });
 
-  test(("can place a ship on the board and detect it"), () => {
+  test(("can place a ship on a valid board spot and detect it"), () => {
     const gameboardP1 = Gameboard();
 
-    expect(gameboardP1.placeShip(carrierP1, "A1")).toBe("A5");
-    expect(gameboardP1.board).toHaveProperty("A1", "empty");
+    gameboardP1.placeShip(carrierP1, "A6");
+    expect(gameboardP1.board).toHaveProperty("A6", "unhit ship");
+    expect(gameboardP1.board).toHaveProperty("A10", "unhit ship");
+    expect(gameboardP1.board).toHaveProperty("A7", "unhit ship");
+
+    expect(() => { gameboardP1.placeShip(submarineP1, "B1", "up"); }).toThrow(Error);
+
+    gameboardP1.placeShip(cruiserP1, "E10", "up");
+    expect(gameboardP1.board).toHaveProperty("E10", "unhit ship");
+    expect(gameboardP1.board).toHaveProperty("D10", "unhit ship");
+    expect(gameboardP1.board).toHaveProperty("B5", "empty");
   });
 });

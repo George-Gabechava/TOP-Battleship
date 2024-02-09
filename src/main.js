@@ -47,8 +47,14 @@ function Gameboard() {
   function placeShip(shipObj, startPos, shipDirection = "right") {
     const shipLength = shipObj.length;
     const endPos = findEndPosition(shipLength, startPos, shipDirection);
+    if (endPos == "Error") {
+      return endPos;
+    }
     // Now using startPos and endPos, we can populate the board with this ship
-    // for i in length
+    for (let i = 1; i <= shipLength; i += 1) {
+      const currentPos = findEndPosition(i, startPos, shipDirection);
+      board[currentPos] = "unhit ship";
+    }
     // populate each grid with the unhit ship property
   }
 
@@ -65,7 +71,11 @@ function Gameboard() {
 
 function findEndPosition(shipLength, startPos, shipDirection) {
   // find the current position
-  const xStartPos = startPos[1];
+  let xStartPos = startPos[1];
+  // account for two digits for x=10
+  if (startPos.length > 2) {
+    xStartPos = "10";
+  }
   const yStartPos = startPos[0];
   let xEndPos;
   let yEndPos;
@@ -81,9 +91,11 @@ function findEndPosition(shipLength, startPos, shipDirection) {
   }
 
   // check if end position is out of bounds
-  if (xEndPos > 10 || yEndPos > "J") {
-    return new Error("ship cannot be placed out of bounds");
+
+  if (xEndPos > 10 || yEndPos < "A") {
+    return Error("ship cannot be placed out of bounds");
   }
+
   const endPos = yEndPos + xEndPos.toString();
   return endPos;
 }
