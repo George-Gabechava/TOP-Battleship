@@ -31,6 +31,37 @@ function Ship(shipName, length, sunk = false, timesHit = 0) {
   };
 }
 
+function findEndPosition(shipLength, startPos, shipDirection) {
+  // find the current position
+  const yStartPos = startPos[0];
+  let xStartPos = startPos[1];
+  // account for two digits for x=10
+  if (startPos.length > 2) {
+    xStartPos = "10";
+  }
+  let xEndPos;
+  let yEndPos;
+
+  // find the end position of the current ship given the direction & length
+  if (shipDirection === "right") {
+    xEndPos = (Number(xStartPos) + shipLength - 1);
+    yEndPos = yStartPos;
+  }
+  if (shipDirection === "up") {
+    xEndPos = Number(xStartPos);
+    yEndPos = String.fromCharCode(yStartPos.charCodeAt(0) - shipLength + 1);
+  }
+
+  // check if end position is out of bounds
+
+  if (xEndPos > 10 || yEndPos < "A") {
+    throw new Error("ship cannot be placed out of bounds");
+  }
+
+  const endPos = yEndPos + xEndPos.toString();
+  return endPos;
+}
+
 function Gameboard() {
   const xarray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
   const yarray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
@@ -46,10 +77,15 @@ function Gameboard() {
 
   function placeShip(shipObj, startPos, shipDirection = "right") {
     const shipLength = shipObj.length;
-    const endPos = findEndPosition(shipLength, startPos, shipDirection);
-    if (endPos == "Error") {
-      return endPos;
+    let endPos;
+
+    try {
+      endPos = findEndPosition(shipLength, startPos, shipDirection);
+    } catch (e) {
+      // recieved an error
+      // once DOM is set up, may want to display error visually
     }
+
     // Now using startPos and endPos, we can populate the board with this ship
     for (let i = 1; i <= shipLength; i += 1) {
       const currentPos = findEndPosition(i, startPos, shipDirection);
@@ -67,37 +103,6 @@ function Gameboard() {
     placeShip,
     receiveAttack,
   };
-}
-
-function findEndPosition(shipLength, startPos, shipDirection) {
-  // find the current position
-  let xStartPos = startPos[1];
-  // account for two digits for x=10
-  if (startPos.length > 2) {
-    xStartPos = "10";
-  }
-  const yStartPos = startPos[0];
-  let xEndPos;
-  let yEndPos;
-
-  // find the end position of the current ship given the direction & length
-  if (shipDirection === "right") {
-    xEndPos = (Number(xStartPos) + shipLength - 1);
-    yEndPos = yStartPos;
-  }
-  if (shipDirection === "up") {
-    xEndPos = Number(xStartPos);
-    yEndPos = String.fromCharCode(yStartPos.charCodeAt(0) - shipLength + 1);
-  }
-
-  // check if end position is out of bounds
-
-  if (xEndPos > 10 || yEndPos < "A") {
-    return Error("ship cannot be placed out of bounds");
-  }
-
-  const endPos = yEndPos + xEndPos.toString();
-  return endPos;
 }
 
 module.exports = { Ship, Gameboard };

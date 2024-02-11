@@ -41,11 +41,21 @@ describe("Gameboard Tests", () => {
     expect(gameboardP1.board).toHaveProperty("A10", "unhit ship");
     expect(gameboardP1.board).toHaveProperty("A7", "unhit ship");
 
-    expect(() => { gameboardP1.placeShip(submarineP1, "B1", "up"); }).toThrow(Error);
+    expect(() => {
+      gameboardP1.placeShip(submarineP1, "B1", "up");
+    }).toThrow(new Error("ship cannot be placed out of bounds"));
 
     gameboardP1.placeShip(cruiserP1, "E10", "up");
     expect(gameboardP1.board).toHaveProperty("E10", "unhit ship");
     expect(gameboardP1.board).toHaveProperty("D10", "unhit ship");
     expect(gameboardP1.board).toHaveProperty("B5", "empty");
+  });
+
+  test("out of bounds wrapped test", () => {
+    function placeOutOfBounds() {
+      const gameboardP1 = Gameboard();
+      gameboardP1.placeShip(submarineP1, "B1", "up");
+    }
+    expect(placeOutOfBounds).toThrow(new Error("ship cannot be placed out of bounds"));
   });
 });
