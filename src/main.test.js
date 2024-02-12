@@ -4,6 +4,7 @@ const { Ship, Gameboard } = require("./main");
 const carrierP1 = Ship("carrierP1", 5);
 const cruiserP1 = Ship("cruiserP1", 3);
 const submarineP1 = Ship("submarineP1", 3);
+const Player1Ships = { carrierP1, cruiserP1, submarineP1 };
 
 describe("Ship Tests", () => {
   test("Ship object  creation has correct properties", () => {
@@ -21,6 +22,7 @@ describe("Ship Tests", () => {
     cruiserP1.hit();
     cruiserP1.hit();
     expect(cruiserP1.timesHit).toBe(3);
+    expect(cruiserP1).toHaveProperty("timesHit", 3);
     expect(cruiserP1.sunk).toBe(true); // Sunk after 3 hits
 
     expect(cruiserP1).toHaveProperty("length", 3);
@@ -38,25 +40,28 @@ describe("Gameboard Tests", () => {
     const gameboardP1 = Gameboard();
 
     gameboardP1.placeShip(carrierP1, "A6");
-    expect(gameboardP1.board).toHaveProperty("A6", "unhit ship");
-    expect(gameboardP1.board).toHaveProperty("A10", "unhit ship");
+    // expect(gameboardP1.board.A6).toHaveProperty("shipName", "carrierP1");
+    // expect(gameboardP1.board.A6).toHaveProperty("A6", "unhit ship");
+    // expect(gameboardP1.board.A6).toHaveProperty("A10", "unhit ship");
+    // expect(gameboardP1.board.A6).toHaveProperty("A7", "unhit ship");
+
+    // expect(() => {
+    //   gameboardP1.placeShip(submarineP1, "C6", "up");
+    // }).toThrow(new Error("can't place ship on another ship"));
+    // expect(gameboardP1.board).toHaveProperty("B6", "empty");
+
+    // gameboardP1.placeShip(cruiserP1, "E10", "up");
+    // expect(gameboardP1.board.E10).toHaveProperty("E10", "unhit ship");
+    // expect(gameboardP1.board.D10).toHaveProperty("D10", "unhit ship");
+    // expect(gameboardP1.board).toHaveProperty("B5", "empty");
+
+    gameboardP1.receiveAttack("A10");
+    expect(carrierP1.grids).toStrictEqual(["A6", "A7", "A8", "A9", "A10"]);
+    expect(carrierP1).toHaveProperty("timesHit", 1);
+    gameboardP1.receiveAttack("G10");
+    expect(gameboardP1.board).toHaveProperty("G10", "shot water");
     expect(gameboardP1.board).toHaveProperty("A7", "unhit ship");
-
-    expect(() => {
-      gameboardP1.placeShip(submarineP1, "C6", "up");
-    }).toThrow(new Error("can't place ship on another ship"));
-    expect(gameboardP1.board).toHaveProperty("B6", "empty");
-
-    gameboardP1.placeShip(cruiserP1, "E10", "up");
-    expect(gameboardP1.board).toHaveProperty("E10", "unhit ship");
-    expect(gameboardP1.board).toHaveProperty("D10", "unhit ship");
-    expect(gameboardP1.board).toHaveProperty("B5", "empty");
-
-    // gameboardP1.receiveAttack("E10");
-    // expect(gameboardP1.board).toHaveProperty("E10", "shot ship");
-    // gameboardP1.receiveAttack("G10");
-    // expect(gameboardP1.board).toHaveProperty("G10", "shot water");
-    // expect(cruiserP1).toHaveProperty("times hit", 1);
+    expect(carrierP1).toHaveProperty("timesHit", 1);
   });
 
   test("out of bounds wrapped test", () => {

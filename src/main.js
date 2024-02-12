@@ -66,6 +66,7 @@ function Gameboard() {
   const xarray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
   const yarray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
   const board = {};
+  const playerShips = [];
   if (board[0] === undefined) {
     for (const i in xarray) {
       for (const j in yarray) {
@@ -82,7 +83,6 @@ function Gameboard() {
     const endPos = findEndPosition(shipLength, startPos, shipDirection);
 
     if (endPos === new Error("ship cannot be placed out of bounds")) {
-      console.log("return dis");
       return endPos;
     }
 
@@ -94,28 +94,36 @@ function Gameboard() {
         throw new Error("can't place ship on another ship");
       }
     }
+    const shipGrids = [];
     // populate each grid with the unhit ship property and ship name
     for (let i = 1; i <= shipLength; i += 1) {
       const currentPos = findEndPosition(i, startPos, shipDirection);
+      shipGrids.push(currentPos);
       board[currentPos] = "unhit ship";
-      // board[currentPos] = shipObj;
     }
+    // Add grids the ship occupies to the ship properties
+    shipObj.grids = shipGrids;
+
+    // Add ship to player ships
+    playerShips.push(shipObj);
   }
 
   // code to recieve an attack then send the 'hit' function or record a miss
   function receiveAttack(currentShot) {
-    // if (board[currentShot].includes("hit ship") || board[currentShot].includes("shot water")) {
-    //   throw new Error("already shot here");
-    // }
-    // if (board[currentShot].includes("unhit ship")) {
-    //   console.log(board[currentShot]);
-    //   const thisShip = board[currentShot].Ship.shipName;
-    //   console.log(thisShip);
-    //   thisShip.hit();
-    //   board[currentShot] = "hit ship";
-    // } else {
-    //   board[currentShot] = "shot water";
-    // }
+    if (board[currentShot] === "shot ship" || board[currentShot] === "shot water") {
+      throw new Error("already shot here");
+    }
+    if (board[currentShot] === "unhit ship") {
+      for (const i in playerShips) {
+        const currentShipGrids = playerShips[i].grids;
+        if (currentShipGrids.includes(currentShot)) {
+          board[currentShot] = "shot ship";
+          playerShips[i].hit();
+        }
+      }
+    } else {
+      board[currentShot] = "shot water";
+    }
   }
 
   return {
