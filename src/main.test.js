@@ -1,12 +1,13 @@
 const { Ship, Gameboard } = require("./main");
 
-const carrierP1 = Ship("carrier", 5);
+// ship objects to use for tests
+const carrierP1 = Ship("carrierP1", 5);
 const cruiserP1 = Ship("cruiserP1", 3);
 const submarineP1 = Ship("submarineP1", 3);
 
 describe("Ship Tests", () => {
-  test("creates a Ship object with correct properties", () => {
-    expect(carrierP1).toHaveProperty("shipName", "carrier");
+  test("Ship object  creation has correct properties", () => {
+    expect(carrierP1).toHaveProperty("shipName", "carrierP1");
     expect(carrierP1).toHaveProperty("length", 5);
     expect(carrierP1).toHaveProperty("sunk", false); // Initial state
     expect(carrierP1).toHaveProperty("timesHit", 0); // Initial state
@@ -42,20 +43,28 @@ describe("Gameboard Tests", () => {
     expect(gameboardP1.board).toHaveProperty("A7", "unhit ship");
 
     expect(() => {
-      gameboardP1.placeShip(submarineP1, "B1", "up");
-    }).toThrow(new Error("ship cannot be placed out of bounds"));
+      gameboardP1.placeShip(submarineP1, "C6", "up");
+    }).toThrow(new Error("can't place ship on another ship"));
+    expect(gameboardP1.board).toHaveProperty("B6", "empty");
 
     gameboardP1.placeShip(cruiserP1, "E10", "up");
     expect(gameboardP1.board).toHaveProperty("E10", "unhit ship");
     expect(gameboardP1.board).toHaveProperty("D10", "unhit ship");
     expect(gameboardP1.board).toHaveProperty("B5", "empty");
+
+    // gameboardP1.receiveAttack("E10");
+    // expect(gameboardP1.board).toHaveProperty("E10", "shot ship");
+    // gameboardP1.receiveAttack("G10");
+    // expect(gameboardP1.board).toHaveProperty("G10", "shot water");
+    // expect(cruiserP1).toHaveProperty("times hit", 1);
   });
 
   test("out of bounds wrapped test", () => {
+    const gameboardP1 = Gameboard();
     function placeOutOfBounds() {
-      const gameboardP1 = Gameboard();
       gameboardP1.placeShip(submarineP1, "B1", "up");
     }
     expect(placeOutOfBounds).toThrow(new Error("ship cannot be placed out of bounds"));
+    expect(gameboardP1.board).toHaveProperty("B1", "empty");
   });
 });

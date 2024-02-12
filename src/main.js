@@ -77,25 +77,45 @@ function Gameboard() {
 
   function placeShip(shipObj, startPos, shipDirection = "right") {
     const shipLength = shipObj.length;
-    let endPos;
 
-    try {
-      endPos = findEndPosition(shipLength, startPos, shipDirection);
-    } catch (e) {
-      // recieved an error
-      // once DOM is set up, may want to display error visually
+    // Find end Position of current placement, ensuring we don't go out of bounds
+    const endPos = findEndPosition(shipLength, startPos, shipDirection);
+
+    if (endPos === new Error("ship cannot be placed out of bounds")) {
+      console.log("return dis");
+      return endPos;
     }
 
-    // Now using startPos and endPos, we can populate the board with this ship
+    // Now using startPos and endPos, check if ship placements don't overlap
+    for (let i = 1; i <= shipLength; i += 1) {
+      const currentPos = findEndPosition(i, startPos, shipDirection);
+      // Make sure we dont allow ships to be placed ontop on eachother
+      if (board[currentPos] !== "empty") {
+        throw new Error("can't place ship on another ship");
+      }
+    }
+    // populate each grid with the unhit ship property and ship name
     for (let i = 1; i <= shipLength; i += 1) {
       const currentPos = findEndPosition(i, startPos, shipDirection);
       board[currentPos] = "unhit ship";
+      // board[currentPos] = shipObj;
     }
-    // populate each grid with the unhit ship property
   }
 
-  function receiveAttack(x, y) {
-    // code to recieve an attack then send the 'hit' function or record a miss
+  // code to recieve an attack then send the 'hit' function or record a miss
+  function receiveAttack(currentShot) {
+    // if (board[currentShot].includes("hit ship") || board[currentShot].includes("shot water")) {
+    //   throw new Error("already shot here");
+    // }
+    // if (board[currentShot].includes("unhit ship")) {
+    //   console.log(board[currentShot]);
+    //   const thisShip = board[currentShot].Ship.shipName;
+    //   console.log(thisShip);
+    //   thisShip.hit();
+    //   board[currentShot] = "hit ship";
+    // } else {
+    //   board[currentShot] = "shot water";
+    // }
   }
 
   return {
