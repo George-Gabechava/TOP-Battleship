@@ -1,0 +1,35 @@
+#container {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: lightgray;
+  justify-content: center;
+  align-items: center;
+}
+
+.board {
+  display: flex;
+  background-color: aquamarine;
+  width: 45 vmax;
+}
+
+.cell {
+  background-color: lightcyan;
+  height: 4vmax;
+  width: 4vmax;
+  border: 2px solid lightblue;
+}
+
+.cell:hover {
+  background-color: lightcoral;
+}
+
+.ylabel {
+  display: flex;
+  background-color: lightgray;
+  height: 4vmax;
+  width: 4vmax;
+  border: 2px solid gray;
+
+  justify-content: center;
+  align-items: center;
+}

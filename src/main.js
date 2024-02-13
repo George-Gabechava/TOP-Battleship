@@ -130,7 +130,68 @@ function Gameboard() {
     board,
     placeShip,
     receiveAttack,
+    playerShips,
   };
 }
 
-module.exports = { Ship, Gameboard };
+function Player(targetCord, currentTurn = "P1", player2 = "AI") {
+  const player1Board = Gameboard();
+  const player2Board = Gameboard();
+
+  if (player1Board.playerShips.length < 5) {
+    // if (player2Board.playerShips.length < 5) {
+    player1Board.placeShip(Ship("carrierP1", 5), "A1");
+    player1Board.placeShip(Ship("battleshipP1", 4), "E1");
+    player1Board.placeShip(Ship("cruiserP1", 3), "F1");
+    player1Board.placeShip(Ship("submarineP1", 3), "J2", "up");
+    player1Board.placeShip(Ship("patrolP1", 2), "D3", "up");
+    // }
+  }
+
+  if (player2 === "AI" && player2Board.playerShips.length < 5) {
+    // if (player2Board.playerShips.length < 5) {
+    player2Board.placeShip(Ship("carrierP2", 5), "A2");
+    player2Board.placeShip(Ship("battleshipP2", 4), "E2");
+    player2Board.placeShip(Ship("cruiserP2", 3), "F3");
+    player2Board.placeShip(Ship("submarineP2", 3), "J10", "up");
+    player2Board.placeShip(Ship("patrolP2", 2), "D9", "up");
+    // }
+  }
+
+  // Generate board for AI to choose randomly
+  const xarray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  const yarray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+  const board = [];
+
+  if (board[0] === undefined) {
+    for (const i in xarray) {
+      for (const j in yarray) {
+        const gridPosition = yarray[i] + xarray[j];
+        board.push(gridPosition);
+      }
+    }
+  }
+
+  // if (currentTurn === "P1") {
+  //   player2Board.receiveAttack("F5");
+  //   currentTurn = "P2";
+  // }
+
+  if (currentTurn === "P2") {
+    // Get a random board position & remove it from selections
+    const randomShotIndex = [Math.floor(Math.random() * board.length)];
+    const randomShot = board[randomShotIndex];
+    board.splice(randomShotIndex, 1);
+    console.log("AI Shoots", randomShot);
+
+    player1Board.receiveAttack(randomShot);
+    currentTurn = "P1";
+  }
+
+  return {
+    player1Board,
+    player2Board,
+  };
+}
+
+module.exports = { Ship, Gameboard, Player };
