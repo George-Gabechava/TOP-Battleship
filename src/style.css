@@ -8,16 +8,18 @@
 
 .board {
   display: flex;
+  justify-content: center;
   background-color: aquamarine;
-  width: 45 vmax;
-  margin: 2vmax;
+  width: 45vmax;
+  margin: 1.5vmax;
 }
 
 .cell {
   background-color: lightcyan;
-  height: 3.5vmax;
-  width: 3.5vmax;
+  height: 4vmax;
+  width: 4vmax;
   border: 2px solid lightblue;
+  box-sizing: border-box;
 }
 
 .cell:hover {
@@ -27,10 +29,20 @@
 .ylabel {
   display: flex;
   background-color: lightgray;
-  height: 3.5vmax;
-  width: 3.5vmax;
+  height: 4vmax;
+  width: 4vmax;
   border: 2px solid gray;
 
   justify-content: center;
   align-items: center;
+
+  box-sizing: border-box;
+}
+
+.shotMissed {
+  background-color: blue;
+}
+
+.shotHit {
+  background-color: darkred;
 }

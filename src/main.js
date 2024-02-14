@@ -115,10 +115,12 @@ function Gameboard() {
         if (currentShipGrids.includes(currentShot)) {
           board[currentShot] = "shot ship";
           playerShips[i].hit();
+          return "hit";
         }
       }
     } else {
       board[currentShot] = "shot water";
+      return "miss";
     }
   }
 
@@ -130,27 +132,26 @@ function Gameboard() {
   };
 }
 
-function Player(playerName = "P1", currentTurn) {
-  const player1Board = Gameboard();
-  const player2Board = Gameboard();
+function Player(playerName) {
+  const playerBoard = Gameboard();
 
-  if (player1Board.playerShips.length < 5) {
+  if (playerName === "P1" && playerBoard.playerShips.length < 5) {
     // if (player2Board.playerShips.length < 5) {
-    player1Board.placeShip(Ship("carrierP1", 5), "A1");
-    player1Board.placeShip(Ship("battleshipP1", 4), "E1");
-    player1Board.placeShip(Ship("cruiserP1", 3), "F1");
-    player1Board.placeShip(Ship("submarineP1", 3), "J2", "up");
-    player1Board.placeShip(Ship("patrolP1", 2), "D3", "up");
+    playerBoard.placeShip(Ship("carrierP1", 5), "A2");
+    playerBoard.placeShip(Ship("battleshipP1", 4), "E1");
+    playerBoard.placeShip(Ship("cruiserP1", 3), "F1");
+    playerBoard.placeShip(Ship("submarineP1", 3), "J2", "up");
+    playerBoard.placeShip(Ship("patrolP1", 2), "D3", "up");
     // }
   }
 
-  if (playerName != "P1" && player2Board.playerShips.length < 5) {
+  if (playerName != "P1" && playerBoard.playerShips.length < 5) {
     // if (player2Board.playerShips.length < 5) {
-    player2Board.placeShip(Ship("carrierP2", 5), "A2");
-    player2Board.placeShip(Ship("battleshipP2", 4), "E2");
-    player2Board.placeShip(Ship("cruiserP2", 3), "F3");
-    player2Board.placeShip(Ship("submarineP2", 3), "J10", "up");
-    player2Board.placeShip(Ship("patrolP2", 2), "D9", "up");
+    playerBoard.placeShip(Ship("carrierP2", 5), "A2");
+    playerBoard.placeShip(Ship("battleshipP2", 4), "E2");
+    playerBoard.placeShip(Ship("cruiserP2", 3), "F3");
+    playerBoard.placeShip(Ship("submarineP2", 3), "J10", "up");
+    playerBoard.placeShip(Ship("patrolP2", 2), "D9", "up");
     // }
   }
 
@@ -159,7 +160,7 @@ function Player(playerName = "P1", currentTurn) {
   const yarray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
   const board = [];
 
-  if (board[0] === undefined) {
+  if (board[0] === undefined && playerName === "P2") {
     for (const i in xarray) {
       for (const j in yarray) {
         const gridPosition = yarray[i] + xarray[j];
@@ -168,25 +169,18 @@ function Player(playerName = "P1", currentTurn) {
     }
   }
 
-  // if (currentTurn === "P1") {
-  //   player2Board.receiveAttack("F5");
-  //   currentTurn = "P2";
-  // }
-
-  if (currentTurn === "P2") {
-    // Get a random board position & remove it from selections
-    const randomShotIndex = [Math.floor(Math.random() * board.length)];
-    const randomShot = board[randomShotIndex];
-    board.splice(randomShotIndex, 1);
-    console.log("AI Shoots", randomShot);
-
-    player1Board.receiveAttack(randomShot);
-    currentTurn = "P1";
+  // Have the AI shoot a random location
+  function AIshoot() {
+    const randNum = Math.floor(Math.random() * board.length);
+    const randShot = board[randNum];
+    board.splice(randNum, 1);
+    console.log(board);
+    return randShot;
   }
 
   return {
-    player1Board,
-    player2Board,
+    playerBoard,
+    AIshoot,
   };
 }
 
