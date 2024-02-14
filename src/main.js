@@ -2,11 +2,8 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable guard-for-in */
 
+// refactor my ship to classes
 function Ship(shipName, length, sunk = false, timesHit = 0) {
-  this.length = length;
-  this.timesHit = timesHit;
-  this.sunk = sunk;
-
   function isSunk() {
     if (this.timesHit === this.length) {
       this.sunk = true;
@@ -17,7 +14,6 @@ function Ship(shipName, length, sunk = false, timesHit = 0) {
 
   function hit() {
     this.timesHit += 1;
-
     this.isSunk();
   }
 
@@ -134,7 +130,7 @@ function Gameboard() {
   };
 }
 
-function Player(targetCord, currentTurn = "P1", player2 = "AI") {
+function Player(playerName = "P1", currentTurn) {
   const player1Board = Gameboard();
   const player2Board = Gameboard();
 
@@ -148,7 +144,7 @@ function Player(targetCord, currentTurn = "P1", player2 = "AI") {
     // }
   }
 
-  if (player2 === "AI" && player2Board.playerShips.length < 5) {
+  if (playerName != "P1" && player2Board.playerShips.length < 5) {
     // if (player2Board.playerShips.length < 5) {
     player2Board.placeShip(Ship("carrierP2", 5), "A2");
     player2Board.placeShip(Ship("battleshipP2", 4), "E2");

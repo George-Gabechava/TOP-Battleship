@@ -10,12 +10,13 @@
   display: flex;
   background-color: aquamarine;
   width: 45 vmax;
+  margin: 2vmax;
 }
 
 .cell {
   background-color: lightcyan;
-  height: 4vmax;
-  width: 4vmax;
+  height: 3.5vmax;
+  width: 3.5vmax;
   border: 2px solid lightblue;
 }
 
@@ -26,8 +27,8 @@
 .ylabel {
   display: flex;
   background-color: lightgray;
-  height: 4vmax;
-  width: 4vmax;
+  height: 3.5vmax;
+  width: 3.5vmax;
   border: 2px solid gray;
 
   justify-content: center;

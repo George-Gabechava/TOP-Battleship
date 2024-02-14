@@ -1,13 +1,11 @@
 const { Ship, Gameboard, Player } = require("./main");
 
 let game = Player();
-const boardP1 = document.getElementById("boardP1"); // Get the grid container
 
-function startNewGame() {
-  game = Player();
+function startNewGame(playerName) {
+  game = Player(playerName);
 
-  const boardP1elem = document.getElementById("boardP1");
-  const boardP2elem = document.getElementById("boardP2");
+  const boardPlayerUI = document.getElementById(`board${playerName}`);
 
   const boardUIP1 = game.player1Board.board;
   const keysP1 = Object.keys(boardUIP1);
@@ -26,7 +24,7 @@ function startNewGame() {
 
         // Append the cell to the col
         colElement.appendChild(cellElement);
-        boardP1.appendChild(colElement);
+        boardPlayerUI.appendChild(colElement);
       }
 
       if (row == 0 && col > 0) {
@@ -39,7 +37,7 @@ function startNewGame() {
 
         // Append the cell to the col
         colElement.appendChild(cellElement);
-        boardP1.appendChild(colElement);
+        boardPlayerUI.appendChild(colElement);
       }
       if (col == 0) {
         // Create a cell element
@@ -58,15 +56,16 @@ function startNewGame() {
         cellElement.classList.add("cell"); // Add a class for styling
 
         // Set unique cell ID
-        cellElement.id = `${numToAlph}${col}`;
+        cellElement.id = `${numToAlph}${col}${playerName}`;
 
         // Append the cell to the col
         colElement.appendChild(cellElement);
       }
     }
     // Append the col to the grid container
-    boardP1.appendChild(colElement);
+    boardPlayerUI.appendChild(colElement);
   }
 }
 
-startNewGame();
+startNewGame("P1");
+startNewGame("P2");
