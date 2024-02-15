@@ -149,30 +149,37 @@ function Player(playerName) {
     }
   }
 
+  // P1 / human code
   if (playerName === "P1" && playerBoard.playerShips.length < 5) {
-    // if (player2Board.playerShips.length < 5) {
     playerBoard.placeShip(Ship("carrierP1", 5), "A2");
     playerBoard.placeShip(Ship("battleshipP1", 4), "E1");
     playerBoard.placeShip(Ship("cruiserP1", 3), "F1");
     playerBoard.placeShip(Ship("submarineP1", 3), "J2", "up");
     playerBoard.placeShip(Ship("patrolP1", 2), "D3", "up");
-    // }
+  }
+
+  // P2 / AI code
+  function AIplace() {
+    const randomPlacement = [];
+    const randNum = Math.floor(Math.random() * board.length);
+    randomPlacement.push(board[randNum]);
+    const zeroorone = Math.round(Math.random());
+    if (zeroorone === 0) {
+      randomPlacement.push("right");
+    } else {
+      randomPlacement.push("up");
+    }
+    return randomPlacement;
   }
 
   if (playerName === "P2" && playerBoard.playerShips.length < 5) {
     let stopper = 0;
     const shipsToPlace = [Ship("carrierP2", 5), Ship("battleshipP2", 4), Ship("cruiserP2", 3), Ship("submarineP2", 3), Ship("patrolP2", 2)];
-    // issue is we are placing the carrier on itself, need to do one by one
-    // playerBoard.placeShip(Ship("carrierP2", 5), "A2");
-    // playerBoard.placeShip(Ship("battleshipP2", 4), "B2");
-    // playerBoard.placeShip(Ship("cruiserP2", 3), "J1", "up");
-    // playerBoard.placeShip(Ship("submarineP2", 3), "J2", "up");
     while (playerBoard.playerShips.length < 5) {
       try {
-        for (let i = 0; i < 5; i++) {
-          const randomPlacements = AIplace();
-          playerBoard.placeShip(shipsToPlace[i], randomPlacements[0], randomPlacements[1]);
-        }
+        const randomPlacements = AIplace();
+        const currentShip = shipsToPlace[playerBoard.playerShips.length];
+        playerBoard.placeShip(currentShip, randomPlacements[0], randomPlacements[1]);
       } catch (e) {
         stopper++;
         if (stopper > 100) {
@@ -188,21 +195,7 @@ function Player(playerName) {
     const randNum = Math.floor(Math.random() * board.length);
     const randShot = board[randNum];
     board.splice(randNum, 1);
-    console.log(board);
     return randShot;
-  }
-
-  function AIplace() {
-    const randomPlacement = [];
-    const randNum = Math.floor(Math.random() * board.length);
-    randomPlacement.push(board[randNum]);
-    const zeroorone = Math.round(Math.random());
-    if (zeroorone === 0) {
-      randomPlacement.push("right");
-    } else {
-      randomPlacement.push("up");
-    }
-    return randomPlacement;
   }
 
   return {
