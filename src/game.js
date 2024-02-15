@@ -1,6 +1,6 @@
 const { Ship, Gameboard, Player } = require("./main");
 
-function startNewGame(playerName) {
+function makeGrid(playerName) {
   game = Player(playerName);
 
   const boardPlayerUI = document.getElementById(`board${playerName}`);
@@ -59,18 +59,26 @@ function startNewGame(playerName) {
   }
 }
 
-// Start a new game
-function newGame() {
-  startNewGame("P1");
-  startNewGame("P2");
+// Start a game
+let currentTurn;
+function startGame() {
+  makeGrid("P1");
+  makeGrid("P2");
+  currentTurn = "P1";
 }
+
+let Player1;
+let Player2;
+
+/// / Still need a way to 'clean' the cell classes
+function newGame() {
+  Player1 = Player("P1");
+  Player2 = Player("P2");
+}
+
+startGame();
 newGame();
-
-const Player1 = Player("P1");
-const Player2 = Player("P2");
-
 // Set the current turn to the first player
-let currentTurn = "P1";
 
 // Make the cells interative
 const cells = document.querySelectorAll(".cell");
@@ -84,30 +92,32 @@ cells.forEach((cell) => {
 
 // check if the game is over once all ships are sunk
 function checkGameOver(shotPlayer) {
-  console.log(shotPlayer);
   let shipsSunk = 0;
   for (let i = 0; i < 5; i++) {
-    console.log(shotPlayer.playerBoard.playerShips[i]);
     if (shotPlayer.playerBoard.playerShips[i].sunk === true) {
       shipsSunk += 1;
     }
   }
-  console.log(shipsSunk);
   if (shipsSunk === 5) {
     // Game Over
     if (currentTurn === "P1") {
       console.log("Game over", "Player 1 has won!");
+      // Change current turn to stop the game
+      currentTurn = "";
     } else {
       console.log("Game over", "Player 2 has won!");
+      currentTurn = "";
     }
   }
 }
 
 // Implement a take a shot interactive function
 function takeShot(currentCell) {
-  // If P1 / human turn
+  // Variables for shot location and shot player
   let shotCord;
   let shootPlayer;
+
+  // If P1 / human turn
   if (currentCell) {
     const shotID = currentCell.id;
     // get coordinate & player
@@ -119,7 +129,6 @@ function takeShot(currentCell) {
     }
   }
 
-  // If P1 turn
   if (currentTurn === "P1" && shootPlayer === "P2") {
     const shoot = Player2.playerBoard.receiveAttack(shotCord);
     console.log(shoot);
@@ -132,8 +141,8 @@ function takeShot(currentCell) {
 
     if (shoot === "hit") {
       currentCell.classList.add("shotHit");
-      checkGameOver(Player2);
       currentTurn = "P2";
+      checkGameOver(Player2);
       takeShot();
     }
     return;
@@ -141,10 +150,14 @@ function takeShot(currentCell) {
 
   // If P2 / AI turn
   if (currentTurn === "P2") {
-    const shoot = Player2.AIshoot();
-    console.log(shoot);
-    currentCell = `${shoot}P2`;
+    // Get a coordinate to shoot
+    const getTarget = Player2.AIshoot();
+    console.log(getTarget);
+    // Use that coordinate to shoot
+    const shoot = Player1.playerBoard.receiveAttack(getTarget);
 
+    // Update UI
+    currentCell = document.getElementById(`${getTarget}P1`);
     if (shoot === "miss") {
       currentCell.classList.add("shotMissed");
       currentTurn = "P1";
@@ -152,8 +165,8 @@ function takeShot(currentCell) {
 
     if (shoot === "hit") {
       currentCell.classList.add("shotHit");
-      checkGameOver(Player1);
       currentTurn = "P1";
+      checkGameOver(Player1);
     }
   }
 }

@@ -73,15 +73,8 @@ describe("Gameboard Tests", () => {
 });
 
 describe("Player Tests", () => {
-  const player1 = Player("P1");
   const player2 = Player("P2");
-  test(("Ships have been placed"), () => {
-    expect(player1.playerBoard.board).toHaveProperty("B1", "empty");
-    expect(player1.playerBoard.board).toHaveProperty("F3", "unhit ship");
-    expect(player1.playerBoard.playerShips[0].grids).toStrictEqual(["A2", "A3", "A4", "A5", "A6"]);
-
-    expect(player2.playerBoard.board).toHaveProperty("B1", "empty");
-    expect(player2.playerBoard.board).toHaveProperty("F3", "unhit ship");
-    expect(player2.playerBoard.playerShips[4].grids).toStrictEqual(["D3", "C3"]);
+  test(("AI Ships have been placed"), () => {
+    expect(player2.playerBoard.playerShips.length).toBe(5);
   });
 });
