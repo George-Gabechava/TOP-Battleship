@@ -135,12 +135,12 @@ function Gameboard() {
 function Player(playerName) {
   const playerBoard = Gameboard();
 
-  // Generate board for AI to choose randomly
+  // Generate board
   const xarray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
   const yarray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
   const board = [];
 
-  if (board[0] === undefined && playerName === "P2") {
+  if (board[0] === undefined) {
     for (const i in xarray) {
       for (const j in yarray) {
         const gridPosition = yarray[i] + xarray[j];
@@ -149,17 +149,8 @@ function Player(playerName) {
     }
   }
 
-  // P1 / human code
-  if (playerName === "P1" && playerBoard.playerShips.length < 5) {
-    playerBoard.placeShip(Ship("carrierP1", 5), "A2");
-    playerBoard.placeShip(Ship("battleshipP1", 4), "E1");
-    playerBoard.placeShip(Ship("cruiserP1", 3), "F1");
-    playerBoard.placeShip(Ship("submarineP1", 3), "J2", "up");
-    playerBoard.placeShip(Ship("patrolP1", 2), "D3", "up");
-  }
-
-  // P2 / AI code
-  function AIplace() {
+  // Random placement code
+  function autoPlacement() {
     const randomPlacement = [];
     const randNum = Math.floor(Math.random() * board.length);
     randomPlacement.push(board[randNum]);
@@ -172,12 +163,13 @@ function Player(playerName) {
     return randomPlacement;
   }
 
-  if (playerName === "P2" && playerBoard.playerShips.length < 5) {
+  // P1 / human code
+  if (playerName === "P1" && playerBoard.playerShips.length < 5) {
     let stopper = 0;
-    const shipsToPlace = [Ship("carrierP2", 5), Ship("battleshipP2", 4), Ship("cruiserP2", 3), Ship("submarineP2", 3), Ship("patrolP2", 2)];
+    const shipsToPlace = [Ship("carrierP1", 5), Ship("battleshipP1", 4), Ship("cruiserP1", 3), Ship("submarineP1", 3), Ship("patrolP1", 2)];
     while (playerBoard.playerShips.length < 5) {
       try {
-        const randomPlacements = AIplace();
+        const randomPlacements = autoPlacement();
         const currentShip = shipsToPlace[playerBoard.playerShips.length];
         playerBoard.placeShip(currentShip, randomPlacements[0], randomPlacements[1]);
       } catch (e) {
@@ -187,7 +179,24 @@ function Player(playerName) {
         }
       }
     }
-    console.log(playerBoard, playerName);
+  }
+
+  // P2 code
+  if (playerName === "P2" && playerBoard.playerShips.length < 5) {
+    let stopper = 0;
+    const shipsToPlace = [Ship("carrierP2", 5), Ship("battleshipP2", 4), Ship("cruiserP2", 3), Ship("submarineP2", 3), Ship("patrolP2", 2)];
+    while (playerBoard.playerShips.length < 5) {
+      try {
+        const randomPlacements = autoPlacement();
+        const currentShip = shipsToPlace[playerBoard.playerShips.length];
+        playerBoard.placeShip(currentShip, randomPlacements[0], randomPlacements[1]);
+      } catch (e) {
+        stopper++;
+        if (stopper > 100) {
+          break;
+        }
+      }
+    }
   }
 
   // Have the AI shoot a random location
@@ -201,7 +210,7 @@ function Player(playerName) {
   return {
     playerBoard,
     AIshoot,
-    AIplace,
+    autoPlacement,
     Name: playerName,
   };
 }

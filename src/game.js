@@ -6,8 +6,9 @@ function makeGrid(player) {
   const boardPlayerUI = document.getElementById(`board${currentName}`);
 
   const boardUI = player.playerBoard.board;
-  const keysP1 = Object.keys(boardUI);
-  const valuesP1 = Object.values(boardUI);
+  // Note to self, If I need to seperate keys and values, use:
+  // const keysP1 = Object.keys(boardUI);
+  // const valuesP1 = Object.values(boardUI);
 
   for (let col = 0; col <= 10; col++) {
     // Create a cell element
@@ -17,7 +18,7 @@ function makeGrid(player) {
     for (let row = 0; row < 10; row++) {
       // column number to alphabet forumla
       const numToAlph = String.fromCharCode(row + "A".charCodeAt(0));
-      if (row == 0 && col == 0) {
+      if (row === 0 && col === 0) {
         const cellElement = document.createElement("div");
         cellElement.classList.add("ylabel");
 
@@ -26,7 +27,7 @@ function makeGrid(player) {
         boardPlayerUI.appendChild(colElement);
       }
 
-      if (row == 0 && col > 0) {
+      if (row === 0 && col > 0) {
         const cellElement = document.createElement("div");
         cellElement.classList.add("ylabel");
 
@@ -36,7 +37,7 @@ function makeGrid(player) {
         colElement.appendChild(cellElement);
         boardPlayerUI.appendChild(colElement);
       }
-      if (col == 0) {
+      if (col === 0) {
         const cellElement = document.createElement("div");
         cellElement.classList.add("ylabel");
 
@@ -71,8 +72,7 @@ let currentTurn;
 let P1;
 let P2;
 
-/// / Still need a way to 'clean' the cell classes
-function newGame() {
+function startGame() {
   P1 = Player("P1");
   P2 = Player("P2");
   makeGrid(P1);
@@ -80,17 +80,21 @@ function newGame() {
 
   currentTurn = "P1";
 }
-newGame();
 
 // Make the cells interative
-const cells = document.querySelectorAll(".cell");
-cells.forEach((cell) => {
-  cell.addEventListener("click", () => {
-    // Highlight or update the cell based on interaction
-    const selectedCell = cell;
-    takeShot(selectedCell);
+let cells;
+function enableInteraction() {
+  cells = document.querySelectorAll(".cell");
+  cells.forEach((cell) => {
+    cell.addEventListener("click", () => {
+      // Highlight or update the cell based on interaction
+      const selectedCell = cell;
+      takeShot(selectedCell);
+    });
   });
-});
+}
+startGame();
+enableInteraction();
 
 // check if the game is over once all ships are sunk
 function checkGameOver(shotPlayer) {
@@ -118,8 +122,6 @@ function checkUpdateShipUI(shotPlayer) {
   if (shotPlayer.Name === "P1") {
     for (let i = 0; i < 5; i++) {
       if (shotPlayer.playerBoard.playerShips[i].sunk === true) {
-        console.log("hitdis");
-        console.log(shotPlayer.playerBoard.playerShips[i].shipName);
         if (i === 0) {
           const ship0P1UI = document.getElementById("ship0P1");
           ship0P1UI.classList.remove("shipSunkUI");
@@ -152,8 +154,6 @@ function checkUpdateShipUI(shotPlayer) {
   if (shotPlayer.Name === "P2") {
     for (let i = 0; i < 5; i++) {
       if (shotPlayer.playerBoard.playerShips[i].sunk === true) {
-        console.log("hitdis");
-        console.log(shotPlayer.playerBoard.playerShips[i].shipName);
         if (i === 0) {
           const ship0P1UI = document.getElementById("ship0P2");
           ship0P1UI.classList.remove("shipSunkUI");
@@ -204,7 +204,6 @@ function takeShot(currentCell) {
 
   if (currentTurn === "P1" && shootPlayer === "P2") {
     const shoot = P2.playerBoard.receiveAttack(shotCord);
-    console.log(shoot);
 
     if (shoot === "miss") {
       currentCell.classList.add("shotMissed");
@@ -227,7 +226,6 @@ function takeShot(currentCell) {
   if (currentTurn === "P2") {
     // Get a coordinate to shoot
     const getTarget = P2.AIshoot();
-    console.log(getTarget);
     // Use that coordinate to shoot
     const shoot = P1.playerBoard.receiveAttack(getTarget);
 
@@ -246,3 +244,29 @@ function takeShot(currentCell) {
     }
   }
 }
+
+const newGameButton = document.getElementById("buttonNew");
+const sunkUI = document.querySelectorAll(".shipSunkUI");
+newGameButton.addEventListener("click", () => {
+  const boardP1UI = document.getElementById("boardP1");
+  while (boardP1UI.hasChildNodes()) boardP1UI.removeChild(boardP1UI.firstChild);
+
+  const boardP2UI = document.getElementById("boardP2");
+  while (boardP2UI.hasChildNodes()) boardP2UI.removeChild(boardP2UI.firstChild);
+
+  cells.forEach((cell) => {
+    cell.classList.remove("shipSunkUI");
+  });
+
+  sunkUI.forEach((UIelement) => {
+    UIelement.classList.remove("shipSunkUIisSunk");
+  });
+
+  P1 = Player("P1");
+  makeGrid(P1);
+  P2 = Player("P2");
+  makeGrid(P2);
+
+  currentTurn = "P1";
+  enableInteraction();
+});
