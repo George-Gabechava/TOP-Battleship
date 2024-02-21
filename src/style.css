@@ -77,3 +77,16 @@ footer {
 #footer a:visited {
   color: salmon;
 }
+
+.containsShip {
+  background-color: gray;
+}
+
+.shipSunkUI {
+  font-size: large;
+}
+
+.shipSunkUIisSunk {
+  font-size: large;
+  color: red;
+}

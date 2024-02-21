@@ -1,13 +1,13 @@
 const { Ship, Gameboard, Player } = require("./main");
 
-function makeGrid(playerName) {
-  game = Player(playerName);
+function makeGrid(player) {
+  const currentName = player.Name;
 
-  const boardPlayerUI = document.getElementById(`board${playerName}`);
+  const boardPlayerUI = document.getElementById(`board${currentName}`);
 
-  const boardUIP1 = game.playerBoard.board;
-  const keysP1 = Object.keys(boardUIP1);
-  const valuesP1 = Object.values(boardUIP1);
+  const boardUI = player.playerBoard.board;
+  const keysP1 = Object.keys(boardUI);
+  const valuesP1 = Object.values(boardUI);
 
   for (let col = 0; col <= 10; col++) {
     // Create a cell element
@@ -49,7 +49,14 @@ function makeGrid(playerName) {
         cellElement.classList.add("cell");
 
         // Set unique cell ID
-        cellElement.id = `${numToAlph}${col}${playerName}`;
+        cellElement.id = `${numToAlph}${col}${currentName}`;
+
+        const currentCell = `${numToAlph}${col}`;
+
+        // Check if current cell contains a ship & change its color
+        if (currentName === "P1" && boardUI[currentCell] === "unhit ship") {
+          cellElement.classList.add("containsShip");
+        }
 
         colElement.appendChild(cellElement);
       }
@@ -61,24 +68,19 @@ function makeGrid(playerName) {
 
 // Start a game
 let currentTurn;
-function startGame() {
-  makeGrid("P1");
-  makeGrid("P2");
-  currentTurn = "P1";
-}
-
-let Player1;
-let Player2;
+let P1;
+let P2;
 
 /// / Still need a way to 'clean' the cell classes
 function newGame() {
-  Player1 = Player("P1");
-  Player2 = Player("P2");
-}
+  P1 = Player("P1");
+  P2 = Player("P2");
+  makeGrid(P1);
+  makeGrid(P2);
 
-startGame();
+  currentTurn = "P1";
+}
 newGame();
-// Set the current turn to the first player
 
 // Make the cells interative
 const cells = document.querySelectorAll(".cell");
@@ -111,6 +113,77 @@ function checkGameOver(shotPlayer) {
   }
 }
 
+// Update ship sunk indicator
+function checkUpdateShipUI(shotPlayer) {
+  if (shotPlayer.Name === "P1") {
+    for (let i = 0; i < 5; i++) {
+      if (shotPlayer.playerBoard.playerShips[i].sunk === true) {
+        console.log("hitdis");
+        console.log(shotPlayer.playerBoard.playerShips[i].shipName);
+        if (i === 0) {
+          const ship0P1UI = document.getElementById("ship0P1");
+          ship0P1UI.classList.remove("shipSunkUI");
+          ship0P1UI.classList.add("shipSunkUIisSunk");
+        }
+        if (i === 1) {
+          const ship1P1UI = document.getElementById("ship1P1");
+          ship1P1UI.classList.remove("shipSunkUI");
+          ship1P1UI.classList.add("shipSunkUIisSunk");
+        }
+        if (i === 2) {
+          const ship2P1UI = document.getElementById("ship2P1");
+          ship2P1UI.classList.remove("shipSunkUI");
+          ship2P1UI.classList.add("shipSunkUIisSunk");
+        }
+        if (i === 3) {
+          const ship3P1UI = document.getElementById("ship3P1");
+          ship3P1UI.classList.remove("shipSunkUI");
+          ship3P1UI.classList.add("shipSunkUIisSunk");
+        }
+        if (i === 4) {
+          const ship4P1UI = document.getElementById("ship4P1");
+          ship4P1UI.classList.remove("shipSunkUI");
+          ship4P1UI.classList.add("shipSunkUIisSunk");
+        }
+      }
+    }
+  }
+
+  if (shotPlayer.Name === "P2") {
+    for (let i = 0; i < 5; i++) {
+      if (shotPlayer.playerBoard.playerShips[i].sunk === true) {
+        console.log("hitdis");
+        console.log(shotPlayer.playerBoard.playerShips[i].shipName);
+        if (i === 0) {
+          const ship0P1UI = document.getElementById("ship0P2");
+          ship0P1UI.classList.remove("shipSunkUI");
+          ship0P1UI.classList.add("shipSunkUIisSunk");
+        }
+        if (i === 1) {
+          const ship1P2UI = document.getElementById("ship1P2");
+          ship1P2UI.classList.remove("shipSunkUI");
+          ship1P2UI.classList.add("shipSunkUIisSunk");
+        }
+        if (i === 2) {
+          const ship2P2UI = document.getElementById("ship2P2");
+          ship2P2UI.classList.remove("shipSunkUI");
+          ship2P2UI.classList.add("shipSunkUIisSunk");
+        }
+        if (i === 3) {
+          const ship3P2UI = document.getElementById("ship3P2");
+          ship3P2UI.classList.remove("shipSunkUI");
+          ship3P2UI.classList.add("shipSunkUIisSunk");
+        }
+        if (i === 4) {
+          const ship4P2UI = document.getElementById("ship4P2");
+          ship4P2UI.classList.remove("shipSunkUI");
+          ship4P2UI.classList.add("shipSunkUIisSunk");
+        }
+      }
+    }
+  }
+}
+
 // Implement a take a shot interactive function
 function takeShot(currentCell) {
   // Variables for shot location and shot player
@@ -130,7 +203,7 @@ function takeShot(currentCell) {
   }
 
   if (currentTurn === "P1" && shootPlayer === "P2") {
-    const shoot = Player2.playerBoard.receiveAttack(shotCord);
+    const shoot = P2.playerBoard.receiveAttack(shotCord);
     console.log(shoot);
 
     if (shoot === "miss") {
@@ -140,9 +213,11 @@ function takeShot(currentCell) {
     }
 
     if (shoot === "hit") {
+      currentCell.classList.remove("containsShip");
       currentCell.classList.add("shotHit");
       currentTurn = "P2";
-      checkGameOver(Player2);
+      checkUpdateShipUI(P2);
+      checkGameOver(P2);
       takeShot();
     }
     return;
@@ -151,10 +226,10 @@ function takeShot(currentCell) {
   // If P2 / AI turn
   if (currentTurn === "P2") {
     // Get a coordinate to shoot
-    const getTarget = Player2.AIshoot();
+    const getTarget = P2.AIshoot();
     console.log(getTarget);
     // Use that coordinate to shoot
-    const shoot = Player1.playerBoard.receiveAttack(getTarget);
+    const shoot = P1.playerBoard.receiveAttack(getTarget);
 
     // Update UI
     currentCell = document.getElementById(`${getTarget}P1`);
@@ -166,7 +241,8 @@ function takeShot(currentCell) {
     if (shoot === "hit") {
       currentCell.classList.add("shotHit");
       currentTurn = "P1";
-      checkGameOver(Player1);
+      checkUpdateShipUI(P1);
+      checkGameOver(P1);
     }
   }
 }

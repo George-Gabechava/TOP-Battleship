@@ -202,6 +202,7 @@ function Player(playerName) {
     playerBoard,
     AIshoot,
     AIplace,
+    Name: playerName,
   };
 }
 
