@@ -95,4 +95,5 @@ footer {
   display: flex;
   flex-direction: column;
   margin-left: 3vmin;
+  margin-right: 3vmin;
 }
