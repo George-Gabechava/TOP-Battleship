@@ -111,12 +111,12 @@ function checkGameOver(shotPlayer) {
   // Game Over message once all ships of a player are sunk
   if (shipsSunk === 5) {
     if (currentTurn === "P1") {
-      gameStatusMessage.textContent = "Game over! Player 1 has won!";
+      gameStatusMessage.textContent = "Game over! Player 2 has won!";
 
       // Change current turn to stop the game
       currentTurn = "";
     } else {
-      gameStatusMessage.textContent = "Game over! Player 2 has won!";
+      gameStatusMessage.textContent = "Game over! Player 1 has won!";
       currentTurn = "";
     }
   }
