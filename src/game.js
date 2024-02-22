@@ -1,5 +1,6 @@
 const { Ship, Gameboard, Player } = require("./main");
 
+// Function to create the UI for gameplay
 function makeGrid(player) {
   const currentName = player.Name;
 
@@ -96,6 +97,9 @@ function enableInteraction() {
 startGame();
 enableInteraction();
 
+// Display winner status
+const gameStatusMessage = document.getElementById("gameStatus");
+
 // check if the game is over once all ships are sunk
 function checkGameOver(shotPlayer) {
   let shipsSunk = 0;
@@ -104,14 +108,15 @@ function checkGameOver(shotPlayer) {
       shipsSunk += 1;
     }
   }
+  // Game Over message once all ships of a player are sunk
   if (shipsSunk === 5) {
-    // Game Over
     if (currentTurn === "P1") {
-      console.log("Game over", "Player 1 has won!");
+      gameStatusMessage.textContent = "Game over! Player 1 has won!";
+
       // Change current turn to stop the game
       currentTurn = "";
     } else {
-      console.log("Game over", "Player 2 has won!");
+      gameStatusMessage.textContent = "Game over! Player 2 has won!";
       currentTurn = "";
     }
   }
@@ -119,6 +124,7 @@ function checkGameOver(shotPlayer) {
 
 // Update ship sunk indicator
 function checkUpdateShipUI(shotPlayer) {
+  // Player 1 ship sunk legend
   if (shotPlayer.Name === "P1") {
     for (let i = 0; i < 5; i++) {
       if (shotPlayer.playerBoard.playerShips[i].sunk === true) {
@@ -151,6 +157,7 @@ function checkUpdateShipUI(shotPlayer) {
     }
   }
 
+  // Player 2 ship sunk legend
   if (shotPlayer.Name === "P2") {
     for (let i = 0; i < 5; i++) {
       if (shotPlayer.playerBoard.playerShips[i].sunk === true) {
@@ -245,6 +252,7 @@ function takeShot(currentCell) {
   }
 }
 
+// New Game, refresh all UI clases
 const newGameButton = document.getElementById("buttonNew");
 const sunkUI = document.querySelectorAll(".shipSunkUI");
 newGameButton.addEventListener("click", () => {
@@ -268,5 +276,7 @@ newGameButton.addEventListener("click", () => {
   makeGrid(P2);
 
   currentTurn = "P1";
+  gameStatusMessage.textContent = "The game is in progress.";
+
   enableInteraction();
 });

@@ -2,7 +2,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable guard-for-in */
 
-// refactor my ship to classes
+// Ship object
 function Ship(shipName, length, sunk = false, timesHit = 0) {
   function isSunk() {
     if (this.timesHit === this.length) {
@@ -27,6 +27,7 @@ function Ship(shipName, length, sunk = false, timesHit = 0) {
   };
 }
 
+// Make sure the ship placement is valid
 function findEndPosition(shipLength, startPos, shipDirection) {
   // find the current position
   const yStartPos = startPos[0];
@@ -49,7 +50,6 @@ function findEndPosition(shipLength, startPos, shipDirection) {
   }
 
   // check if end position is out of bounds
-
   if (xEndPos > 10 || yEndPos < "A") {
     throw new Error("ship cannot be placed out of bounds");
   }
@@ -58,6 +58,7 @@ function findEndPosition(shipLength, startPos, shipDirection) {
   return endPos;
 }
 
+// Gameboard object for each player
 function Gameboard() {
   const xarray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
   const yarray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
@@ -72,6 +73,7 @@ function Gameboard() {
     }
   }
 
+  // Place the ship on the board
   function placeShip(shipObj, startPos, shipDirection = "right") {
     const shipLength = shipObj.length;
 
@@ -132,6 +134,7 @@ function Gameboard() {
   };
 }
 
+// Rules for each player
 function Player(playerName) {
   const playerBoard = Gameboard();
 
